@@ -1,0 +1,157 @@
+{%extends 'main.html'%}
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="{% static 'styles/style.css'%}" />
+  <script src="{% static 'scripts/script.js' %}"></script>
+  <title>Home</title>
+</head>
+
+<body>
+
+  {% block content %}
+  <main class="layout layout--3">
+    <div class="container">
+      <div class="topics">
+
+        <a class="btn btn--main" href="{%url 'create-projet'%}">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+            <title>add</title>
+            <path
+              d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z">
+            </path>
+          </svg>Nouveau projet</a>
+        <br>
+        <br>
+        <div class="topics__header">
+          <h3>LES PROJETS</h3>
+        </div>
+
+        <ul class="topics__list">
+          <li>
+            <a class="active" href=" {% url 'home' %}">ALL<span>{{projets_count}} Projets</span></a>
+          </li>
+          {%for projet in projets %}
+          <li>
+            <h5>
+              <a href="{%url 'home'%}?q={{projet.nom}}">{{projet.nom}}</a>
+            </h5>
+          </li>
+
+          {%endfor%}
+        </ul>
+
+      </div>
+
+
+      <div class="roomList">
+        <div class="mobile-menu">
+          <form class="header__search">
+            <label>
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <title>search</title>
+                <path
+                  d="M32 30.586l-10.845-10.845c1.771-2.092 2.845-4.791 2.845-7.741 0-6.617-5.383-12-12-12s-12 5.383-12 12c0 6.617 5.383 12 12 12 2.949 0 5.649-1.074 7.741-2.845l10.845 10.845 1.414-1.414zM12 22c-5.514 0-10-4.486-10-10s4.486-10 10-10c5.514 0 10 4.486 10 10s-4.486 10-10 10z">
+                </path>
+              </svg>
+              <input placeholder="Search for posts" />
+            </label>
+          </form>
+          <div class="mobile-menuItems">
+            <a class="btn btn--main btn--pill" href="#">Browse Topics</a>
+            <a class="btn btn--main btn--pill" href="#">Recent Activities</a>
+          </div>
+        </div>
+        <div class="roomList__header">
+          <div>
+            <h2>les Taches</h2>
+            <p>{{taches_count}} Taches</p>
+          </div>
+          <a class="btn btn--main" href="{%url 'create-tache'%}">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>add</title>
+              <path
+                d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z">
+              </path>
+            </svg>
+            Créer une nouvelle tache
+          </a>
+        </div>
+
+        {%for tache in taches%}
+        <div class="roomListRoom">
+          <div class="roomListRoom__header">
+            <a href="{%url 'user-Profile' tache.utilisateur.id  %}" class="roomListRoom__author">
+              <div class="avatar avatar--small">
+                <img src="https://randomuser.me/api/portraits/women/11.jpg" />
+              </div>
+              <span>Réalisateur: @{{tache.utilisateur.username}}</span>
+            </a>
+            <div class="roomListRoom__actions">
+              <span>{{tache.createds}}</span>
+            </div>
+          </div>
+          <div class="roomListRoom__content">
+            Tache: <a href="{% url 'tache' tache.id %}">{{tache.titre}}</a>
+            <p>Statut: {{tache.statut}}</p>
+          </div>
+          <div class="roomListRoom__meta">
+            <p class="roomListRoom__topic">projet: {{tache.projet.nom}}</p>
+          </div>
+          <div>
+            {%if request.user == tache.utilisateur %}
+            <a href="{%url 'update-Tache' tache.id %}">Modifier</a>
+            <a href="{% url 'delete-Tache' tache.id %}">Supprimer</a>
+            {%endif%}
+          </div>
+        </div>
+        {%endfor%}
+      </div>
+
+
+      <!-- Activities Start -->
+      <div class="activities">
+        <div class="activities__header">
+          <h2>Projet Sélectionné</h2>
+        </div>
+        {% if projet_obj %}
+        <div class="activities__box">
+          <div class="activities__boxHeader roomListRoom__header">
+            <a href="profile.html" class="roomListRoom__author">
+              <p>{{projet_obj.nom}}
+                <span>{{projet_obj.created}}</span>
+                <span>Statut: {{projet_obj.statut}}</span>
+              </p>
+            </a>
+          </div>
+          <div class="activities__boxContent">
+            <p>Créateur : <a href="{%url 'user-Profile' projet_obj.id  %}">@{{projet_obj.utilisateur.username}}</a></p>
+            <div class="activities__boxRoomContent">{{projet_obj.description}}
+            </div>
+          </div>
+          <a href="{% url 'update-Projet' projet_obj.id %}">Modifier</a>
+          <a href="{% url 'delete-Projet' projet_obj.id %}">Supprimer</a>
+          <a href="{% url 'export_project_tasks' projet_obj.id %}" class="btn btn-primary">Télécharger les tâches
+            (JSON)</a>
+          {% else %}
+          <h5>Aucun</h5>
+        </div>
+
+        {% endif %}
+      </div>
+
+    </div>
+
+    {% endblock content %}
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>

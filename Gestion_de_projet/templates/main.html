@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+  <head>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <script src="{% static 'scripts/script.js' %}"></script>
+
+    <title>Gestion de projet</title>
+  </head>
+  <body>
+    {%include 'navbar.html'%} 
+    {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+    <li>{{message}}</li>
+    {%endfor%}
+    </ul>
+    {%endif%}
+
+    {% block content %}
+
+    {% endblock content %}
+
+  </body>
+</html>

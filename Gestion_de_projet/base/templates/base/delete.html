@@ -1,0 +1,9 @@
+{%extends 'main.html'%} 
+{% block content%}
+<form action="" method="POST">
+    {%csrf_token%}
+    <p>Est-ce-que vous êtes sûre de suppriemr "{{obj}}" ?</p>
+    <a href="{{request.META.HTTP_REFERER}}">Retour</a>
+    <input type="submit" value="Confirmer">
+</form> 
+{% endblock content %}
